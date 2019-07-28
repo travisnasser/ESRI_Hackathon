@@ -27,6 +27,53 @@
         margin: 0;
         height: 100%;
         width: 100%;
+
+      }
+
+      body {
+        font-family: "Lato", sans-serif;
+      }
+
+      .sidenav {
+        height: 100%;
+        width: 300px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+      }
+
+      .sidenav a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 22px;
+        color: #818181;
+        display: block;
+      }
+
+      .sidenav a:hover {
+        color: #f1f1f1;
+      }
+
+      .main {
+        margin-left: 160px; /* Same as the width of the sidenav */
+        font-size: 28px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+      }
+
+      @media screen and (max-height: 450px) {
+        .sidenav {padding-top: 15px;}
+        .sidenav a {font-size: 18px;}
+      }
+
+      .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
       }
     </style>
 
@@ -35,14 +82,15 @@
         "esri/Map",
         "esri/views/MapView",
         "esri/layers/FeatureLayer",
-        "esri/widgets/Search",
+        "esri/widgets/Search"
 
       ], function(Map, MapView, FeatureLayer,Search) {
         let tapestryLayerView;
         var tapestryLayer = new FeatureLayer({
           url:
           "https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Tapestry/MapServer/1",
-          outFields: ["TAPSEGNAM"]
+          outFields: ["TAPSEGNAM"],
+          opacity: 0.70
         });
 
         var map = new Map({
@@ -76,17 +124,124 @@
 
         view.whenLayerView(tapestryLayer).then(function(layerView){
           tapestryLayerView = layerView;
+          tapestryLayerView.visible = false;
+        });
+var selectedExtent;
+        searchWidget.on("select-result", function(event){
+          selectedExtent = event.result.extent;
+          /*tapestryLayerView.filter = {
+            //where: "TAPSEGNAM in ('Laptops and Lattes','Pacific Heights')",
+              geometry: selectedExtent,
+              spatialRelationship: "contains"
+            };*/
+          console.log("Search result = ", event.result.name);
+
         });
 
-        searchWidget.on("select-result", function(event){
-          var selectedExtent = event.result.extent;
+/*        document.getElementById("submitButton").addEventListener("click", function(event) {
+          console.log("Submit is called");
+   document.getElementById("viewDiv").dispatchEvent(new CustomEvent("hello",
+    {bubbles: true}));
+  });
+*/
+
+        document.getElementById("submitButton").addEventListener("click", function(){
+          var value = "";
+   console.log("Filter is called");
+          let radios1 = document.getElementsByName("ageGroup");
+          for(var i = 0, length = radios1.length; i < length; i++){
+            if(radios1[i].checked){
+              value += radios1[i].value;
+              break;
+            }
+          }
+
+          let radios2 = document.getElementsByName("income");
+          for(var i = 0, length = radios2.length; i < length; i++){
+            if(radios2[i].checked){
+              value += radios2[i].value;
+              break;
+            }
+          }
+
+          let radios3 = document.getElementsByName("familyStatus");
+          for(var i = 0, length = radios3.length; i < length; i++){
+            if(radios3[i].checked){
+              value += radios3[i].value;
+              break;
+            }
+          }
+
+          let radios4 = document.getElementsByName("activities");
+          for(var i = 0, length = radios4.length; i < length; i++){
+            if(radios4[i].checked){
+              value += radios4[i].value;
+              break;
+            }
+          }
+
+          let radios5 = document.getElementsByName("occupation");
+          for(var i = 0, length = radios5.length; i < length; i++){
+            if(radios5[i].checked){
+              value += radios5[i].value;
+              break;
+            }
+          }
+
+          let radios6 = document.getElementsByName("education");
+          for(var i = 0, length = radios6.length; i < length; i++){
+            if(radios6[i].checked){
+              value += radios6[i].value;
+              break;
+            }
+          }
+
+          let radios7 = document.getElementsByName("transportation");
+          for(var i = 0, length = radios7.length; i < length; i++){
+            if(radios7[i].checked){
+              value += radios7[i].value;
+              break;
+            }
+          }
+
+
+          var category = "";
+          console.log("value = ", value);
+
+          switch(value){
+            case "2411113":
+            case "2413113":
+            case "2411123":
+            case "2413123":
+              category = "\'Laptops and Lattes\'";
+              break;
+            case "3332122": category = "\'In Style\'";
+              break;
+            case "3435111":
+            case "3435121": category = "\'Exurbanites\'";
+              break;
+            case "4335512":
+            case "4335522": category = "\'Silver and Gold\'";
+              break;
+            case "2324253":
+            case "2344253" : category = "\'Urban Villages\'";
+              break;
+              ////  add other cases
+          }
+          console.log("cat = ", category);
+          var str = "TAPSEGNAM in (";
+          str = str + category + ")";
+          console.log(str);
           tapestryLayerView.filter = {
-            where: "TAPSEGNAM in ('Laptops and Lattes','Pacific Heights')",
+            where: str,
               geometry: selectedExtent,
               spatialRelationship: "contains"
             };
-          console.log("Search result = ", event.result.name);
+          tapestryLayerView.visible = true;
+
+           console.log("All Done");
         });
+
 
 
       });
@@ -95,5 +250,80 @@
 
   <body>
     <div id="viewDiv"></div>
+
+    <div class="sidenav">
+      <img src="favicon.png" alt="Home Again Logo"  class="center" width="100" height="150" class="center">
+      <a href="#ageGroup">What's your age group preference?</a>
+      <form id="ans1">
+        <font color="#818181">
+          <input type="radio" name="ageGroup" value="1"> 16 - 25<br>
+          <input type="radio" name="ageGroup" value="2"> 26 - 35<br>
+          <input type="radio" name="ageGroup" value="3"> 36 - 50<br>
+          <input type="radio" name="ageGroup" value="4"> 51 - 65<br>
+          <input type="radio" name="ageGroup" value="5"> 66+<br>
+        </font>
+      </form>
+      <a href="income">What's your median income?</a>
+      <form id="ans2">
+        <font color="#818181">
+          <input type="radio" name="income" value="1" > < $35,000<br>
+          <input type="radio" name="income" value="2"> $35,000 - $50,000<br>
+          <input type="radio" name="income" value="3"> $50,001 - $75,000<br>
+          <input type="radio" name="income" value="4"> $75,001 - $100,000<br>
+          <input type="radio" name="income" value="5"> $100,001+<br>
+
+        </font>
+      </form>
+      <a href="#familyStatus">What's your Family status?</a>
+      <form id="ans3">
+        <font color="#818181">
+          <input type="radio" name="familyStatus" value="1" > Single<br>
+          <input type="radio" name="familyStatus" value="2"> Married<br>
+          <input type="radio" name="familyStatus" value="3"> Married with childern<br>
+          <input type="radio" name="familyStatus" value="4"> Single with childern<br>
+          <input type="radio" name="familyStatus" value="5"> Multi-generation<br>
+        </font>
+      </form>
+      <a href="#activities">What are the activities you are most interest in?</a>
+      <form id="ans4">
+        <font color="#818181">
+          <input type="radio" name="activities" value="1"> Traveling / Vacations<br>
+          <input type="radio" name="activities" value="2"> Sports / Outdoor recreation<br>
+          <input type="radio" name="activities" value="3"> Concerts / Night life<br>
+          <input type="radio" name="activities" value="4"> Resturants / Shoping<br>
+          <input type="radio" name="activities" value="5"> House projects / Gardening<br>
+        </font>
+      </form>
+      <a href="#occupation">What's your current occupation?</a>
+      <form id="ans5">
+        <font color="#818181">
+          <input type="radio" name="occupation" value="1"> Professional<br>
+          <input type="radio" name="occupation" value="2"> Service<br>
+          <input type="radio" name="occupation" value="3"> Farming<br>
+          <input type="radio" name="occupation" value="4"> Student / Military<br>
+          <input type="radio" name="occupation" value="5"> Retired<br>
+        </font>
+      </form>
+      <a href="#education">What's your level of education?</a>
+      <form id="ans6">
+        <font color="#818181">
+          <input type="radio" name="education" value="1"> Graduate<br>
+          <input type="radio" name="education" value="2"> Bachelors<br>
+          <input type="radio" name="education" value="3"> High School<br>
+          <input type="radio" name="education" value="4"> GED<br>
+          <input type="radio" name="education" value="5"> Did not finish High School<br>
+        </font>
+      </form>
+      <a href="#transportation">What's your preferred mode of transportation?</a>
+      <form id="ans7">
+        <font color="#818181">
+          <input type="radio" name="transportation" value="1"> Own 2+ vehicles<br>
+          <input type="radio" name="transportation" value="2"> Own 1 vehicle<br>
+          <input type="radio" name="transportation" value="3"> Own + public<br>
+          <input type="radio" name="transportation" value="4"> Public<br>
+        </font>
+      </form>
+      <button type="submit" id="submitButton">Submit</button>
+    </div>
   </body>
 </html>
