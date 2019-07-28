@@ -23,10 +23,57 @@
       html,
       body,
       #viewDiv {
-        padding: 0;
+        padding: 0px 133px;
         margin: 0;
         height: 100%;
-        width: 100%;
+        width: 95%;
+
+      }
+
+      body {
+        font-family: "Lato", sans-serif;
+      }
+
+      .sidenav {
+        height: 100%;
+        width: 400px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+      }
+
+      .sidenav a {
+        padding: 6px 8px 6px 16px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+      }
+
+      .sidenav a:hover {
+        color: #f1f1f1;
+      }
+
+      .main {
+        margin-left: 160px; /* Same as the width of the sidenav */
+        font-size: 28px; /* Increased text to enable scrolling */
+        padding: 0px 10px;
+      }
+
+      @media screen and (max-height: 450px) {
+        .sidenav {padding-top: 15px;}
+        .sidenav a {font-size: 18px;}
+      }
+
+      .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
       }
     </style>
 
@@ -35,14 +82,15 @@
         "esri/Map",
         "esri/views/MapView",
         "esri/layers/FeatureLayer",
-        "esri/widgets/Search",
+        "esri/widgets/Search"
 
       ], function(Map, MapView, FeatureLayer,Search) {
         let tapestryLayerView;
         var tapestryLayer = new FeatureLayer({
           url:
           "https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Tapestry/MapServer/1",
-          outFields: ["TAPSEGNAM"]
+          outFields: ["TAPSEGNAM"],
+          opacity: 0.70
         });
 
         var map = new Map({
@@ -88,12 +136,85 @@
           console.log("Search result = ", event.result.name);
         });
 
-
       });
     </script>
   </head>
 
   <body>
     <div id="viewDiv"></div>
+
+    <div class="sidenav">
+      <img src="favicon.jpeg" alt="Home Again Logo"  class="center" width="100" height="200" class="center">
+      <a href="#ageGroup">What's your age group preference?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="ageGroup" value="16-25"> 16 - 25<br>
+          <input type="radio" name="ageGroup" value="26-35"> 26 - 35<br>
+          <input type="radio" name="ageGroup" value="36-50"> 36 - 50<br>
+          <input type="radio" name="ageGroup" value="51-65"> 51 - 65<br>
+          <input type="radio" name="ageGroup" value="66+"> 66+<br>
+        </font>
+      </form>
+      <a href="income">What's your median income?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="income" value="male" > < $35,000<br>
+          <input type="radio" name="income" value="female"> $35,000 - $50,000<br>
+          <input type="radio" name="income" value="other"> $50,001 - $75,000<br>
+          <input type="radio" name="income" value="other"> $75,001 - $100,000<br>
+          <input type="radio" name="income" value="other"> $100,001+<br>
+
+        </font>
+      </form>
+      <a href="#familyStatus">What's your Family status?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="familyStatus" value="male" > Single<br>
+          <input type="radio" name="familyStatus" value="female"> Married<br>
+          <input type="radio" name="familyStatus" value="other"> Married with childern<br>
+          <input type="radio" name="familyStatus" value="female"> Single with childern<br>
+          <input type="radio" name="familyStatus" value="female"> Multi-generation<br>
+        </font>
+      </form>
+      <a href="#activities">What are the activities you are most interest in?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="activities" value="male"> Traveling / Vacations<br>
+          <input type="radio" name="activities" value="female"> Sports / Outdoor recreation<br>
+          <input type="radio" name="activities" value="other"> Concerts / Night life<br>
+          <input type="radio" name="activities" value="other"> Resturants / Shoping<br>
+          <input type="radio" name="activities" value="other"> House projects / Gardening<br>
+        </font>
+      </form>
+      <a href="#occupation">What's your current occupation?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="occupation" value="male"> Professional<br>
+          <input type="radio" name="occupation" value="female"> Service<br>
+          <input type="radio" name="occupation" value="other"> Farming<br>
+          <input type="radio" name="occupation" value="other"> Student / Military<br>
+          <input type="radio" name="occupation" value="other"> Retired<br>
+        </font>
+      </form>
+      <a href="#education">What's your level of education?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="education" value="male"> Graduate<br>
+          <input type="radio" name="education" value="female"> Bachelors<br>
+          <input type="radio" name="education" value="other"> High School<br>
+          <input type="radio" name="education" value="other"> GED<br>
+          <input type="radio" name="education" value="other"> Did not finish High School<br>
+        </font>
+      </form>
+      <a href="#transportation">What's your preferred mode of transportation?</a>
+      <form>
+        <font color="#818181">
+          <input type="radio" name="transportation" value="male"> Own 2+ vehicles<br>
+          <input type="radio" name="transportation" value="female"> Own 1 vehicle<br>
+          <input type="radio" name="transportation" value="other"> Own + public<br>
+          <input type="radio" name="transportation" value="other"> Public<br>
+        </font>
+      </form>
+    </div>
   </body>
 </html>
