@@ -35,17 +35,10 @@
         "esri/Map",
         "esri/views/MapView",
         "esri/layers/FeatureLayer",
-        "esri/widgets/Search"
+        "esri/widgets/Search",
 
-      ], function(Map, MapView, FeatureLayer,Search) {
-      //  let zipcodeLayerView;
+      ], function(Map, MapView, FeatureLayer,Search, LayerList) {
         let tapestryLayerView;
-        // var featureLayer = new FeatureLayer({
-        //   url:
-        //     "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/Tapestry_Households/FeatureServer/2",
-        //   outFields: ["ID"]
-        // });
-
         var tapestryLayer = new FeatureLayer({
           url:
           "https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Tapestry/MapServer/1",
@@ -80,21 +73,13 @@
         view.ui.add(searchWidget, {
           position: "top-right"
         });
-        // view.whenLayerView(featureLayer).then(function(layerView){
-        //   zipcodeLayerView = layerView;
-        //   console.log("Sushanth Test");
-        // });
+
         view.whenLayerView(tapestryLayer).then(function(layerView){
           tapestryLayerView = layerView;
-          console.log("Sushanth Test2");
         });
 
         searchWidget.on("select-result", function(event){
           var selectedExtent = event.result.extent;
-          // zipcodeLayerView.filter = {
-          //     geometry: selectedExtent,
-          //     spatialRelationship: "contains"
-          //   };
           tapestryLayerView.filter = {
             where: "TAPSEGNAM in ('Laptops and Lattes','Pacific Heights')",
               geometry: selectedExtent,
